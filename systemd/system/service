@@ -1,0 +1,14 @@
+[Unit]
+Description=Run websocket-ledmatrix-snake
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=exec
+DynamicUser=true
+Restart=on-failure
+RestartSec=20
+ExecStart=/usr/bin/websocket-ledmatrix-snake
+
+[Install]
+WantedBy=multi-user.target
