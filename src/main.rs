@@ -3,8 +3,9 @@ use std::time::Duration;
 use futures_util::SinkExt;
 use smarthome_math::Hsv;
 use snake_logic::{get_next_point, Point};
+use tokio::net::TcpStream;
 use tokio::time::sleep;
-use tokio_tungstenite::connect_async;
+use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
 
 const WEBSOCKET: &str = "wss://ledmatrix.edjopato.de/ws";
 const WIDTH: u8 = 8;
@@ -13,10 +14,17 @@ const HEIGHT: u8 = 32;
 #[tokio::main(flavor = "current_thread")]
 async fn main() {
     loop {
-        if let Err(err) = snake().await {
-            eprintln!("pixelmatrix vertical ERROR {err:#}");
+        if let Err(err) = connection().await {
+            eprintln!("ERROR {err:#}");
         }
-        sleep(Duration::from_secs(10)).await;
+        sleep(Duration::from_secs(30)).await;
+    }
+}
+
+async fn connection() -> anyhow::Result<()> {
+    let (mut client, _) = connect_async(WEBSOCKET).await?;
+    loop {
+        snake(&mut client).await?;
     }
 }
 
@@ -63,9 +71,7 @@ fn hue_to_rgb(hue: u16) -> (u8, u8, u8) {
     Hsv::from_hue(f32::from(hue)).to_rgb_u8()
 }
 
-async fn snake() -> anyhow::Result<()> {
-    let (mut client, _) = connect_async(WEBSOCKET).await?;
-
+async fn snake(client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>) -> anyhow::Result<()> {
     let mut food = Point::random(WIDTH, HEIGHT);
     let mut hue = rand::random::<u16>() % 360;
 
@@ -132,5 +138,9 @@ async fn snake() -> anyhow::Result<()> {
     // );
 
     client.flush().await?;
+
+    // let the pixel decay
+    sleep(Duration::from_secs(10)).await;
+
     Ok(())
 }
