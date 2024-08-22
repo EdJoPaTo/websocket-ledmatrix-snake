@@ -137,10 +137,11 @@ async fn snake(client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>) -> anyho
     //     snake.first().unwrap().y,
     // );
 
-    client.flush().await?;
-
-    // let the pixel decay
-    sleep(Duration::from_secs(10)).await;
+    for Point { x, y } in snake {
+        client.send(Pixel::new_black(x, y).into()).await?;
+        client.flush().await?;
+        sleep(Duration::from_millis(100)).await;
+    }
 
     Ok(())
 }
