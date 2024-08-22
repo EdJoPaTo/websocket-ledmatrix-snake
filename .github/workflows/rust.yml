@@ -1,4 +1,4 @@
-name: Test and Build Rust
+name: Rust
 
 on:
   push:
@@ -16,7 +16,6 @@ jobs:
       - run: cargo fmt --check --verbose
 
   clippy:
-    name: Clippy ${{ matrix.toolchain }}
     runs-on: ubuntu-latest
     continue-on-error: ${{ (matrix.toolchain == 'beta') || (matrix.toolchain == 'nightly') }}
     strategy:
@@ -29,9 +28,8 @@ jobs:
     env:
       RUSTFLAGS: --deny warnings
     steps:
-      - name: Setup Rust
+      - uses: dtolnay/rust-toolchain@master
         id: rust
-        uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
@@ -58,11 +56,9 @@ jobs:
     env:
       RUSTFLAGS: --deny warnings
     steps:
-      - name: Setup Rust
+      - uses: dtolnay/rust-toolchain@stable
         id: rust
-        uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: stable
           targets: ${{ matrix.triple }}
 
       - name: Install cargo tools
@@ -92,15 +88,13 @@ jobs:
           key: release-${{ matrix.triple }}-${{ steps.rust.outputs.cachekey }}-${{ hashFiles('**/Cargo.*') }}
           path: target/
 
-      - name: Build
-        run: ${{ runner.os == 'Linux' && 'cross' || 'cargo' }} build --release --offline --target ${{ matrix.triple }}
+      - run: ${{ runner.os == 'Linux' && 'cross' || 'cargo' }} build --release --offline --target ${{ matrix.triple }}
 
       - name: Package deb
         if: runner.os == 'Linux'
         run: cargo deb --no-build --no-strip --target ${{ matrix.triple }} --output ${{ env.ARTIFACT_NAME }}.deb
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.triple }}
           path: |
