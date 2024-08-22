@@ -14,7 +14,7 @@ const HEIGHT: u8 = 32;
 async fn main() {
     loop {
         if let Err(err) = snake().await {
-            eprintln!("pixelmatrix vertical ERROR {err}");
+            eprintln!("pixelmatrix vertical ERROR {err:#}");
         }
         sleep(Duration::from_secs(10)).await;
     }
