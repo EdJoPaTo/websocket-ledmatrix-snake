@@ -623,7 +623,7 @@ dependencies = [
 [[package]]
 name = "smarthome-math"
 version = "0.1.0"
-source = "git+https://github.com/EdJoPaTo/smarthome-math?branch=main#2dedd47733ab46c97a6ad6bf95abbfcc6e3e19e2"
+source = "git+https://github.com/EdJoPaTo/smarthome-math?branch=main#fcd4507775918f9cad316f16fe5f4233905ba706"
 dependencies = [
  "bracket-color",
  "chrono",
