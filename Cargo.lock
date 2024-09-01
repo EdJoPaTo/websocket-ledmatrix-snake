@@ -633,7 +633,7 @@ dependencies = [
 [[package]]
 name = "snake-logic"
 version = "0.4.1"
-source = "git+https://github.com/EdJoPaTo/snake-logic?branch=main#d4658d312cbcb1568d48b59820fde795583bab0b"
+source = "git+https://github.com/EdJoPaTo/snake-logic?branch=main#49b91bbbcca7e8beb63892c52b61ebd25c2f0113"
 dependencies = [
  "rand",
 ]
