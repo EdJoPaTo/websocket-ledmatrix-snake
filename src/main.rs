@@ -63,7 +63,7 @@ impl Pixel {
 #[allow(clippy::fallible_impl_from)]
 impl From<Pixel> for tokio_tungstenite::tungstenite::Message {
     fn from(val: Pixel) -> Self {
-        Self::Text(serde_json::to_string(&val).unwrap())
+        Self::text(serde_json::to_string(&val).unwrap())
     }
 }
 
