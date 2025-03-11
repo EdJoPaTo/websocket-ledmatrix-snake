@@ -26,14 +26,14 @@ lto = true
 [dependencies]
 anyhow = "1"
 futures-util = "0.3"
-rand = "0.8"
+rand = "0.9"
 rustls = { version = "0.23", default-features = false, features = ["ring"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 smarthome-math = { git = "https://github.com/EdJoPaTo/smarthome-math", branch = "main", default-features = false, features = ["bracket-color"] }
 snake-logic = { git = "https://github.com/EdJoPaTo/snake-logic", branch = "main", default-features = false, features = ["rand"] }
 tokio = { version = "1", features = ["macros", "rt", "time"] }
-tokio-tungstenite = { version = "0.23", features = ["rustls-tls-native-roots"] }
+tokio-tungstenite = { version = "0.26", features = ["rustls-tls-native-roots"] }
 
 # https://crates.io/crates/cargo-deb
 [package.metadata.deb]
