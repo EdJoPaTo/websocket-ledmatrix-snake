@@ -1,11 +1,11 @@
 use std::time::Duration;
 
-use futures_util::SinkExt;
+use futures_util::SinkExt as _;
 use smarthome_math::Hsv;
-use snake_logic::{get_next_point, Point};
+use snake_logic::{Point, get_next_point};
 use tokio::net::TcpStream;
 use tokio::time::sleep;
-use tokio_tungstenite::{connect_async, MaybeTlsStream, WebSocketStream};
+use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async};
 
 const WEBSOCKET: &str = "wss://ledmatrix.edjopato.de/ws";
 const WIDTH: u8 = 8;
@@ -28,8 +28,9 @@ async fn connection() -> anyhow::Result<()> {
     }
 }
 
-#[allow(clippy::min_ident_chars)]
+#[expect(clippy::min_ident_chars, reason = "used in websocket protocol")]
 #[derive(Debug, serde::Serialize, Clone, Copy)]
+#[must_use]
 struct Pixel {
     x: u8,
     y: u8,
@@ -50,25 +51,20 @@ impl Pixel {
     }
 
     const fn new_black(x: u8, y: u8) -> Self {
-        Self {
-            x,
-            y,
-            r: 0,
-            g: 0,
-            b: 0,
-        }
+        Self::new(x, y, 0, 0, 0)
+    }
+
+    fn new_hue(x: u8, y: u8, hue: u16) -> Self {
+        let (red, green, blue) = Hsv::from_hue(f32::from(hue)).to_rgb_u8();
+        Self::new(x, y, red, green, blue)
     }
 }
 
-#[allow(clippy::fallible_impl_from)]
+#[expect(clippy::fallible_impl_from)]
 impl From<Pixel> for tokio_tungstenite::tungstenite::Message {
     fn from(val: Pixel) -> Self {
         Self::text(serde_json::to_string(&val).unwrap())
     }
-}
-
-fn hue_to_rgb(hue: u16) -> (u8, u8, u8) {
-    Hsv::from_hue(f32::from(hue)).to_rgb_u8()
 }
 
 async fn snake(client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>) -> anyhow::Result<()> {
@@ -113,16 +109,14 @@ async fn snake(client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>) -> anyho
         hue = (hue + 5) % 360;
         {
             let Point { x, y } = next_point;
-            let (red, green, blue) = hue_to_rgb(hue);
-            let pixel = Pixel::new(x, y, red, green, blue);
+            let pixel = Pixel::new_hue(x, y, hue);
             client.send(pixel.into()).await?;
         }
         snake.insert(0, next_point);
 
         {
             let Point { x, y } = food;
-            let (red, green, blue) = hue_to_rgb((hue + 180) % 360);
-            let pixel = Pixel::new(x, y, red, green, blue);
+            let pixel = Pixel::new_hue(x, y, (hue + 180) % 360);
             client.send(pixel.into()).await?;
         }
 
