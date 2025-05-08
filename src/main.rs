@@ -22,8 +22,8 @@ async fn main() {
 }
 
 async fn connection() -> anyhow::Result<()> {
-    let (mut client, _) = connect_async(WEBSOCKET).await?;
     loop {
+        let (mut client, _) = connect_async(WEBSOCKET).await?;
         snake(&mut client).await?;
     }
 }
