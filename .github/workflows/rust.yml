@@ -12,7 +12,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly
         with:
           components: rustfmt
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: cargo fmt --check --verbose
 
   clippy:
@@ -33,7 +33,7 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
           components: clippy
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: cargo fetch
       - uses: actions/cache@v4
         with:
@@ -67,7 +67,7 @@ jobs:
         with:
           tool: cross,cargo-deb
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -94,7 +94,7 @@ jobs:
         if: runner.os == 'Linux'
         run: cargo deb --no-build --no-strip --target ${{ matrix.triple }} --output ${{ env.ARTIFACT_NAME }}.deb
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ matrix.triple }}
           path: |
