@@ -12,7 +12,6 @@ ExecStart=/usr/bin/websocket-ledmatrix-snake
 
 # See systemd-analyze security
 CapabilityBoundingSet=
-DeviceAllow=
 LockPersonality=true
 MemoryDenyWriteExecute=true
 PrivateDevices=true
@@ -26,7 +25,6 @@ ProtectKernelLogs=true
 ProtectKernelModules=true
 ProtectKernelTunables=true
 ProtectProc=invisible
-ProtectSystem=full
 RestrictAddressFamilies=AF_INET AF_INET6
 RestrictNamespaces=true
 RestrictRealtime=true
@@ -42,7 +40,7 @@ SystemCallFilter=~@raw-io
 SystemCallFilter=~@reboot
 SystemCallFilter=~@resources
 SystemCallFilter=~@swap
-UMask=0077
+UMask=0377
 
 [Install]
 WantedBy=multi-user.target
