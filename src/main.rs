@@ -21,7 +21,7 @@ async fn main() {
     }
 }
 
-async fn connection() -> anyhow::Result<()> {
+async fn connection() -> Result<(), tokio_tungstenite::tungstenite::Error> {
     loop {
         let (mut client, _) = connect_async(WEBSOCKET).await?;
         snake(&mut client).await?;
@@ -67,7 +67,9 @@ impl From<Pixel> for tokio_tungstenite::tungstenite::Message {
     }
 }
 
-async fn snake(client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>) -> anyhow::Result<()> {
+async fn snake(
+    client: &mut WebSocketStream<MaybeTlsStream<TcpStream>>,
+) -> Result<(), tokio_tungstenite::tungstenite::Error> {
     let mut food = Point::random(WIDTH, HEIGHT);
     let mut hue = rand::random::<u16>() % 360;
 

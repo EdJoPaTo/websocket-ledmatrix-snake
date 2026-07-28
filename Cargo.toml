@@ -24,7 +24,6 @@ codegen-units = 1
 lto = true
 
 [dependencies]
-anyhow = "1"
 futures-util = "0.3"
 rand = "0.9"
 rustls = { version = "0.23", default-features = false, features = ["ring"] }
