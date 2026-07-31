@@ -17,7 +17,7 @@ async fn main() {
         if let Err(err) = connection().await {
             eprintln!("ERROR {err:#}");
         }
-        sleep(Duration::from_secs(30)).await;
+        sleep(Duration::from_secs(5)).await;
     }
 }
 
